@@ -1,8 +1,8 @@
-# Silver Leaf - Restaurant Web Application
+# Bihar's Love - Restaurant Web Application
 A Restaurant Web Application with **Table Booking, Online Food Ordering and Delivery Tracking.**<br/>
 
 # Brief Description
-Silver Leaf is a web-based application that is operated on a web server with its data being retained in a database. It is designed to enable the registered customer to reserve a table at the restaurant at a specified time in accordance with its availability, view and order the offered food item of their choice, and track the delivery of their order. <br/> 
+ Bihar's Love is a web-based application that is operated on a web server with its data being retained in a database. It is designed to enable the registered customer to reserve a table at the restaurant at a specified time in accordance with its availability, view and order the offered food item of their choice, and track the delivery of their order. <br/> 
 Since the Internet provides a wider range of customers, the application will provide the restaurant with a chance to increase their profits while customers can avail the restaurant's services at the comforts of their homes.
 
 # How to install our project <br/>

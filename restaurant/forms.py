@@ -1,6 +1,24 @@
+from flask import Flask, render_template, redirect, url_for, flash
+from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, IntegerField
-from wtforms.validators import Length, EqualTo, Email, DataRequired
+from wtforms.validators import Length, EqualTo, DataRequired
+from flask_bcrypt import Bcrypt
+
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tables.db'
+app.config['SECRET_KEY'] = 'your_secret_key_here'  # Replace with your secret key
+db = SQLAlchemy(app)
+bcrypt = Bcrypt(app)
+
+# Define the "user" table as an SQLAlchemy model
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(30), unique=True, nullable=False)
+    fullname = db.Column(db.String(30), nullable=False)
+    address = db.Column(db.String(50), nullable=False)
+    phone_number = db.Column(db.Integer, nullable=False)
+    password = db.Column(db.String(60), nullable=False)
 
 class RegisterForm(FlaskForm):
     username = StringField(label = 'username', validators = [Length(min = 2, max = 30), DataRequired()])

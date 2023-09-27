@@ -4,6 +4,7 @@ from restaurant.models import Table, User, Item, Order
 from restaurant.forms import RegisterForm, LoginForm, OrderIDForm, ReserveForm, AddForm, OrderForm
 from restaurant import db
 from flask_login import login_user, logout_user, login_required, current_user
+from sqlalchemy.exc import IntegrityError
 
 @app.route('/')
 #HOME PAGE
@@ -105,29 +106,38 @@ def logout():
     flash('You have been logged out!', category = 'info')
     return redirect(url_for("home_page")) 
 
-#REGISTER PAGE
-@app.route('/register', methods = ['GET', 'POST'])
+
+# REGISTER PAGE
+@app.route('/register', methods=['GET', 'POST'])
 def register_page():
     forml = LoginForm()
-    form = RegisterForm() 
-    #checks if form is valid
-    if form.validate_on_submit():
-         user_to_create = User(username = form.username.data,
-                               fullname = form.fullname.data,
-                               address = form.address.data,
-                               phone_number = form.phone_number.data,
-                               password = form.password1.data,)
-         db.session.add(user_to_create)
-         db.session.commit()
-         login_user(user_to_create) #login the user on registration 
-         return redirect(url_for('verify'))
-    # else:
-    #     flash("Username already exists!")
+    form = RegisterForm()
 
-    if form.errors != {}: #if there are not errors from the validations
-        for err_msg in form.errors.values():
-            flash(f'There was an error with creating a user: {err_msg}')
-    return render_template('login.html', form = form, forml = forml)
+    if form.validate_on_submit():
+        # Check if the username already exists
+        existing_user = User.query.filter_by(username=form.username.data).first()
+        if existing_user:
+            flash("Username already exists! Please choose a different one.", 'error')
+        else:
+            # Create a new user if the username doesn't exist
+            user_to_create = User(
+                username=form.username.data,
+                fullname=form.fullname.data,
+                address=form.address.data,
+                phone_number=form.phone_number.data,
+                password=form.password1.data
+            )
+            db.session.add(user_to_create)
+            db.session.commit()
+
+            # Log in the newly registered user
+            login_user(user_to_create)
+
+            flash('Registration successful. You are now logged in.', 'success')
+            return redirect(url_for('verify'))  # Redirect to the verification page or another appropriate page
+
+    return render_template('login.html', form=form, forml=forml)
+
 
 #ORDER ID PAGE
 @app.route('/order_id', methods = ['GET', 'POST'])
